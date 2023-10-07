@@ -3,12 +3,15 @@ package mazegame.entity;
 import java.util.HashMap;
 
 public class Location {
-	private HashMap exits;
 	private String description;
 	private String label;
 	private HashMap characters;
 	private Inventory items;
 	private ExitCollection exitCollection;
+	
+    private HashMap<String, Exit> exits;
+    private boolean isShop; // Add shop flag
+    private Vendor vendor; // Add vendor field
 	
 	
 	public Location () {
@@ -44,32 +47,46 @@ public class Location {
 	public void setLabel(String label) {
 		this.label = label;
 	}	
-public String availableExits() {
-        StringBuilder returnMsg = new StringBuilder();
-        for (Object label: this.exits.keySet()) {
-            returnMsg.append("[" + label.toString() + "] ");
-        }
-        return returnMsg.toString();
-}
+	public String availableExits() {
+	        StringBuilder returnMsg = new StringBuilder();
+	        for (Object label: this.exits.keySet()) {
+	            returnMsg.append("[" + label.toString() + "] ");
+	        }
+	        return returnMsg.toString();
+	}
+	
+	public String toString() {
+		return "**********\n" + this.label + "\n**********\n"
+		        + "Exits found :: " + exitCollection.availableExits() + "\n**********\n" 
+		        + "\n" + items.toString()
+		        + this.description + "\n**********\n";
+	}
+	
+	public boolean containsExit(String exitLabel) {
+		return exits.containsKey(exitLabel);
+	}
+	
+	public Inventory getInventory () {
+		return items;
+	}
+	
+	public ExitCollection getExitCollection () {
+		return exitCollection;
+	}
+	
+	public void setShop(boolean isShop) {
+        this.isShop = isShop;
+    }
 
-public String toString() {
-	return "**********\n" + this.label + "\n**********\n"
-	        + "Exits found :: " + exitCollection.availableExits() + "\n**********\n" 
-	        + "\n" + items.toString()
-	        + this.description + "\n**********\n";
-}
+    public boolean isShop() {
+        return isShop;
+    }
 
-public boolean containsExit(String exitLabel) {
-return exits.containsKey(exitLabel);
-}
+    public void setVendor(Vendor vendor) {
+        this.vendor = vendor;
+    }
 
-public Inventory getInventory () {
-	return items;
-}
-
-public ExitCollection getExitCollection () {
-	return exitCollection;
-}
-
-
+    public Vendor getVendor() {
+        return vendor;
+    }
 }

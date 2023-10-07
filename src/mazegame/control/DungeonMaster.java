@@ -25,6 +25,8 @@ public class DungeonMaster {
          commands = new ArrayList<String>();
          commands.add("quit");
          commands.add("move");
+         commands.add("attack");
+         commands.add("buy");
          theParser = new Parser (commands);
          playerTurnHandler = new CommandHandler();
      }
@@ -66,24 +68,39 @@ public class DungeonMaster {
     		 if (userInput.getCommand().equals("quit"))
     			 return false;
     		 if (userInput.getCommand().equals("move")) {
-    			 processMove(userInput);
-    			 return true;
-    		 }
+                 if (userInput.getArguments().size() > 0) {
+                     String direction = (String) userInput.getArguments().get(0);
+                     processMove(direction);
+                 } else {
+                     gameClient.playerMessage("Specify a direction to move (e.g., 'move north').");
+                 }
+                 return true;
+             }
     	 }
     	 gameClient.playerMessage("We don't recognise that command - try again!");
     	 return true;    	 
       }
      
-      private void processMove(ParsedInput userInput) {
-    	 String exitLabel = (String) userInput.getArguments().get(0);
-    	 Exit desiredExit = thePlayer.getCurrentLocation().getExit(exitLabel);
-    	 if (desiredExit == null) {
-    		 gameClient.playerMessage("There is no exit there . . . try moving somewhere else");
-    		 return;
-    	 }
-    	 thePlayer.setCurrentLocation(desiredExit.getDestination());
-    	 gameClient.playerMessage("You find yourself looking at ");
-    	 gameClient.playerMessage(thePlayer.getCurrentLocation().getDescription());
+     private void processMove(String direction) {
+         if (isValidDirection(direction)) {
+             Exit desiredExit = thePlayer.getCurrentLocation().getExit(direction);
+             if (desiredExit != null) {
+                 thePlayer.setCurrentLocation(desiredExit.getDestination());
+                 gameClient.playerMessage("You move " + direction + " and find yourself at:\n");
+                 gameClient.playerMessage(thePlayer.getCurrentLocation().getDescription());
+             } else {
+                 gameClient.playerMessage("There is no exit in that direction.");
+             }
+         } else {
+             gameClient.playerMessage("Invalid direction. Use 'north,' 'south,' 'east,' or 'west'.");
+         }
      }
-
+          
+     private boolean isValidDirection(String direction) {
+         // Implement validation logic here (e.g., check if direction is one of 'north', 'south', 'east', 'west')
+         return direction.equalsIgnoreCase("north")
+             || direction.equalsIgnoreCase("south")
+             || direction.equalsIgnoreCase("east")
+             || direction.equalsIgnoreCase("west");
+     }
 }
