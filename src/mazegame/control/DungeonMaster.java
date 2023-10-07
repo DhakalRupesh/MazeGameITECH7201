@@ -3,6 +3,8 @@ package mazegame.control;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Scanner;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import mazegame.SimpleConsoleClient;
 import mazegame.boundary.IMazeClient;
@@ -10,7 +12,11 @@ import mazegame.boundary.IMazeData;
 import mazegame.entity.Armor;
 import mazegame.entity.Blacksmith;
 import mazegame.entity.Exit;
+import mazegame.entity.Inventory;
+import mazegame.entity.Item;
+import mazegame.entity.Location;
 import mazegame.entity.Player;
+import mazegame.entity.Money;
 import mazegame.entity.NonPlayerCharacter;
 import mazegame.entity.utility.NonPlayerCharacterCollection;
 
@@ -35,6 +41,9 @@ public class DungeonMaster {
          commands.add("move");
          commands.add("buy");
          commands.add("flee");
+         commands.add("listItems");
+         commands.add("getItem");
+         commands.add("dropItem");
          theParser = new Parser (commands);
          playerTurnHandler = new CommandHandler();
          npcCollection = new NonPlayerCharacterCollection();
@@ -96,14 +105,21 @@ public class DungeonMaster {
     	 if (commands.contains(userInput.getCommand())) {
     	        if (userInput.getCommand().equals("quit")) {
     	            return false;
-    	        } else if (userInput.getCommand().equals("move")) {
-    	            processMove(userInput);
-    	        } else if (userInput.getCommand().equals("buy")) {
-    	            processBuy(userInput);
-    	        } else if (userInput.getCommand().equals("flee")) {
-    	            return playerFlee();
-    	        }
-    	    } else {
+	    	        } else if (userInput.getCommand().equals("move")) {
+	    	            processMove(userInput);
+	    	        } else if (userInput.getCommand().equals("buy")) {
+	    	            processBuy(userInput);
+	    	        } else if (userInput.getCommand().equals("flee")) {
+	    	            return playerFlee();
+	    	        }else if (userInput.getCommand().equals("listItems")) {
+	                    handleListItems();
+	                } else if (userInput.getCommand().equals("getItem")) {
+	                    handleGetItem(userInput.getCommand());
+	                } else if (userInput.getCommand().equals("dropItem")) {
+	                    handleDropItem(userInput.getCommand());
+	                }    	    
+    	        } 
+    	 else {
     	        gameClient.playerMessage("We don't recognize that command - try again!");
     	    }
     	    return true;
@@ -261,4 +277,48 @@ public class DungeonMaster {
     	        return false;
     	    }
     	}
+      
+     // Method to handle the "listItems" command
+      private void handleListItems() {
+          String playerInventory = thePlayer.listItems();
+          gameClient.playerMessage(playerInventory);
+      }
+
+      // Method to handle the "getItem" command
+      private void handleGetItem(String command) {
+          Pattern pattern = Pattern.compile("getItem\\s+(\\w+)");
+          Matcher matcher = pattern.matcher(command);
+
+          if (matcher.find()) {
+              String itemLabel = matcher.group(1);
+              Item item = thePlayer.getItem(itemLabel);
+
+              if (item != null) {
+                  thePlayer.getInventory().addItem(item);
+                  gameClient.playerMessage("You got the item: " + item.getLabel());
+              } else {
+                  gameClient.playerMessage("Item not found in the location or invalid item label.");
+              }
+          } else {
+              gameClient.playerMessage("Invalid getItem command. Use 'getItem [itemLabel]'.");
+          }
+      }
+
+      // Method to handle the "dropItem" command
+      private void handleDropItem(String command) {
+          Pattern pattern = Pattern.compile("dropItem\\s+(\\w+)");
+          Matcher matcher = pattern.matcher(command);
+
+          if (matcher.find()) {
+              String itemLabel = matcher.group(1);
+
+              if (thePlayer.dropItem(itemLabel)) {
+                  gameClient.playerMessage("You dropped the item: " + itemLabel);
+              } else {
+                  gameClient.playerMessage("Item not found in your inventory or invalid item label.");
+              }
+          } else {
+              gameClient.playerMessage("Invalid dropItem command. Use 'dropItem [itemLabel]'.");
+          }
+      }
 }

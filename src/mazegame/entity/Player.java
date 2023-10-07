@@ -1,5 +1,8 @@
 package mazegame.entity;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+
 public class Player extends Character {
 private Armor equippedArmor;
 	
@@ -154,5 +157,37 @@ private Money gold;
         return successfullyEscaped;
     }
     
+    
+    // Method to list items in the player's inventory
+    public String listItems() {
+    	StringBuilder itemList = new StringBuilder("Inventory:\n");
+        HashMap<String, Item> items = inventory.getItemList();
+
+        if (items.isEmpty()) {
+            itemList.append("No items in inventory.");
+        } else {
+            for (String itemLabel : items.keySet()) {
+                itemList.append(itemLabel).append("\n");
+            }
+        }
+
+        return itemList.toString();
+    }
+    
+    // Method to get an item from the player's inventory by label
+    public Item getItem(String itemLabel) {
+        return inventory.findItem(itemLabel);
+    }
+
+    // Method to drop an item from the player's inventory by label
+    public boolean dropItem(String itemLabel) {
+        Item itemToDrop = inventory.findItem(itemLabel);
+        if (itemToDrop != null) {
+            inventory.removeItem(itemLabel);
+            return true;
+        }
+        return false; // Item not found in inventory
+    }
+
 
 }
