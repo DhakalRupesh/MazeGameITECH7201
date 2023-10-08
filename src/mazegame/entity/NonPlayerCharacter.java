@@ -66,4 +66,22 @@ public class NonPlayerCharacter extends Character {
         }
         return successfullyEscaped;
     }
+    
+   // Override the talkToCharacter method to customize NPC responses
+    @Override
+    public String talkToCharacter(Character character) {
+        // Implement NPC-specific conversation logic here
+        return "Greetings, Brave Gamer!";
+    }
+    
+    // Override the respondToCharacter method to customize NPC responses to the player
+    @Override
+    public String respondToCharacter(String message) {
+        // Implement NPC's response to the player's message
+        if (message.contains("How are you?")) {
+            return "I'm here to serve.";
+        } else {
+            return "I have no time for chit-chat.";
+        }
+    }
 }

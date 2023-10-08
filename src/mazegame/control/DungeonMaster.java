@@ -44,6 +44,7 @@ public class DungeonMaster {
          commands.add("listItems");
          commands.add("getItem");
          commands.add("dropItem");
+         commands.add("talk");
          theParser = new Parser (commands);
          playerTurnHandler = new CommandHandler();
          npcCollection = new NonPlayerCharacterCollection();
@@ -117,7 +118,9 @@ public class DungeonMaster {
 	                    handleGetItem(userInput.getCommand());
 	                } else if (userInput.getCommand().equals("dropItem")) {
 	                    handleDropItem(userInput.getCommand());
-	                }    	    
+	                } else if (userInput.getCommand().equals("talk")) {
+	                    handleCharacterConversations(); // Initiate character conversations
+	                } 	    
     	        } 
     	 else {
     	        gameClient.playerMessage("We don't recognize that command - try again!");
@@ -321,4 +324,79 @@ public class DungeonMaster {
               gameClient.playerMessage("Invalid dropItem command. Use 'dropItem [itemLabel]'.");
           }
       }
+      
+      private void handleCharacterConversations() {
+    	    // For example, you can have the player initiate a conversation with an NPC
+    	    // Let's say the player wants to talk to an NPC named "Goblin"
+    	    String npcNameToTalkTo = "Goblin";
+
+    	    // Check if the NPC exists in the current location
+    	    NonPlayerCharacter npcToTalkTo = npcCollection.get(npcNameToTalkTo.toLowerCase());
+
+    	    if (npcToTalkTo != null) {
+    	        // The NPC exists, initiate a conversation
+    	        String playerMessage = "Hello, " + npcToTalkTo.getName() + "! How are you?";
+    	        String npcResponse = npcToTalkTo.talkToCharacter(thePlayer);
+
+    	        // Display the conversation messages
+    	        gameClient.playerMessage("You: " + playerMessage);
+    	        gameClient.playerMessage(npcToTalkTo.getName() + ": " + npcResponse);
+
+    	        // You can also handle specific actions or quests based on the conversation
+    	        if (npcResponse.contains("quest")) {
+    	            // Handle quest-related logic
+    	            gameClient.playerMessage("You received a new quest!");
+    	        } else if (npcResponse.contains("trade")) {
+    	            // Handle trading logic with the NPC
+    	            gameClient.playerMessage("You can trade items with " + npcToTalkTo.getName() + ".");
+    	        } else {
+    	            // Handle generic conversation
+    	            gameClient.playerMessage("The conversation continues...");
+    	        }
+    	    } else {
+    	        gameClient.playerMessage("There is no NPC with the name " + npcNameToTalkTo + " here.");
+    	    }
+    	}
+      
+      
+     // Add the getMazeStatus() method
+      public String getMazeStatus() {
+          StringBuilder statusMessage = new StringBuilder();
+
+          // Append player information
+          statusMessage.append("Player Name: ").append(thePlayer.getName()).append("\n");
+          statusMessage.append("Life Points: ").append(thePlayer.getLifePoints()).append("\n");
+          statusMessage.append("Strength: ").append(thePlayer.getStrength()).append("\n");
+          statusMessage.append("Agility: ").append(thePlayer.getAgility()).append("\n");
+
+          // Append player's equipped armor, if any
+          Armor equippedArmor = thePlayer.getEquippedArmor();
+          if (equippedArmor != null) {
+              statusMessage.append("Equipped Armor: ").append(equippedArmor.getLabel()).append("\n");
+              statusMessage.append("Armor Bonus: ").append(equippedArmor.getBonus()).append("\n");
+          } else {
+              statusMessage.append("Equipped Armor: None\n");
+          }
+
+          // Append player's inventory
+          statusMessage.append("Inventory: \n").append(thePlayer.listItems()).append("\n");
+
+          // Append player's gold
+          statusMessage.append("Gold: ").append(thePlayer.getGoldTotal()).append("\n");
+
+          // Append player's current location
+          statusMessage.append("Current Location: ").append(thePlayer.getCurrentLocation().getLabel()).append("\n");
+
+          // Append information about NPCs in the current location
+          /**
+          for (NonPlayerCharacter npc : npcCollection.values()) {
+              if (npc.getCurrentLocation() == thePlayer.getCurrentLocation()) {
+                  statusMessage.append("NPC: ").append(npc.getName());
+                  statusMessage.append(" (Life Points: ").append(npc.getLifePoints()).append(")\n");
+              }
+          }
+          **/
+          return statusMessage.toString();
+      }
+
 }

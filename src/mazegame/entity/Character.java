@@ -53,4 +53,15 @@ public class Character {
 	public void setStrength(int strength) {
 		this.strength = strength;
 	}
+	
+	public String talkToCharacter(Character character) {
+        // Implement conversation logic here
+        return "Hello, " + character.getName() + "! How are you?";
+    }
+    
+    // Add a method to respond to conversations from other characters
+    public String respondToCharacter(String message) {
+        // Implement your character's response logic here
+        return "I'm doing well, thank you!";
+    }
 }
