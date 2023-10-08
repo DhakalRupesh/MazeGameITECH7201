@@ -38,7 +38,7 @@ public class Character {
 		this.lifePoints = lifePoints;
 	}
 
-	private String getName() {
+	public String getName() {
 		return name;
 	}
 
@@ -46,11 +46,11 @@ public class Character {
 		this.name = name;
 	}
 
-	private int getStrength() {
+	public int getStrength() {
 		return strength;
 	}
 
-	private void setStrength(int strength) {
+	public void setStrength(int strength) {
 		this.strength = strength;
 	}
 }
