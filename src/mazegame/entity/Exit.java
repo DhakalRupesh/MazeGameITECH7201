@@ -3,7 +3,6 @@ package mazegame.entity;
 public class Exit {
 	private String description;
 	private Location destination;
-	public boolean isAllowed; 
 	
 	public Exit (String description, Location destination)
 	{
@@ -25,10 +24,6 @@ public class Exit {
 
 	public void setDescription(String description) {
 		this.description = description;
-	}
-
-	public boolean isAllowed() {
-		return false;
 	}
 
 }

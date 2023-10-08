@@ -33,8 +33,4 @@ public class Money {
              return "One gold piece";
          return "There are " + total + " gold pieces";
      }
-
-	public int getTotal() {
-		return this.total;
-	}
  }

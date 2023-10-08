@@ -9,7 +9,6 @@ public class Location {
 	private HashMap characters;
 	private Inventory items;
 	private ExitCollection exitCollection;
-	private boolean allowsFlee;
 	
 	
 	public Location () {
@@ -22,8 +21,6 @@ public class Location {
 		this.setDescription(description);
 		this.setLabel(label);
 		exits = new HashMap();
-		characters = new HashMap<>();
-        allowsFlee = true; // Default to allowing fleeing, you can change this as needed.
 	}
 	
 	public boolean addExit (String exitLabel, Exit theExit){
@@ -47,40 +44,32 @@ public class Location {
 	public void setLabel(String label) {
 		this.label = label;
 	}	
-	public String availableExits() {
-	        StringBuilder returnMsg = new StringBuilder();
-	        for (Object label: this.exits.keySet()) {
-	            returnMsg.append("[" + label.toString() + "] ");
-	        }
-	        return returnMsg.toString();
-	}
-	
-	public String toString() {
-		return "**********\n" + this.label + "\n**********\n"
-		        + "Exits found :: " + exitCollection.availableExits() + "\n**********\n" 
-		        + "\n" + items.toString()
-		        + this.description + "\n**********\n";
-	}
-	
-	public boolean containsExit(String exitLabel) {
-	return exits.containsKey(exitLabel);
-	}
-	
-	public Inventory getInventory () {
-		return items;
-	}
-	
-	public ExitCollection getExitCollection () {
-		return exitCollection;
-	}
-	
-	public boolean allowsFlee() {
-        return allowsFlee;
-    }
-	
-	public void setAllowsFlee(boolean allowsFlee) {
-        this.allowsFlee = allowsFlee;
-    }
+public String availableExits() {
+        StringBuilder returnMsg = new StringBuilder();
+        for (Object label: this.exits.keySet()) {
+            returnMsg.append("[" + label.toString() + "] ");
+        }
+        return returnMsg.toString();
+}
+
+public String toString() {
+	return "**********\n" + this.label + "\n**********\n"
+	        + "Exits found :: " + exitCollection.availableExits() + "\n**********\n" 
+	        + "\n" + items.toString()
+	        + this.description + "\n**********\n";
+}
+
+public boolean containsExit(String exitLabel) {
+return exits.containsKey(exitLabel);
+}
+
+public Inventory getInventory () {
+	return items;
+}
+
+public ExitCollection getExitCollection () {
+	return exitCollection;
+}
 
 
 }
