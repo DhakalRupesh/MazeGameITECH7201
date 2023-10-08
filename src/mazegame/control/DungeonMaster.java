@@ -81,19 +81,19 @@ public class DungeonMaster {
          npcCollection.put(npc1.getName().toLowerCase(), npc1);
          npcCollection.put(npc2.getName().toLowerCase(), npc2);
      }
-         
 
-
+     
      public void runGame() {
-         printWelcome();
-         setupPlayer();
-         setupNPCs(); 
-         while (continueGame) {
-        	 continueGame = processPlayerTurn();
-        	 runNPCs(); // Run NPC turns after the player's turn
-         }
-         gameClient.getReply("\n\n<<Hit enter to exit>>");
-     }
+    	    printWelcome();
+    	    setupPlayer();
+    	    setupNPCs();
+    	    while (continueGame) {
+    	        continueGame = processPlayerTurn();
+//    	        runNPCs(); // Run NPC turns after the player's turn
+    	    }
+    	    gameClient.getReply("\n\n<<Hit enter to exit>>");
+    	}
+
      
      private boolean handlePlayerTurn() {
     	 CommandResponse playerResponse = playerTurnHandler.processTurn(gameClient.getCommand(), thePlayer);
@@ -102,46 +102,58 @@ public class DungeonMaster {
      }  
      
      public boolean processPlayerTurn() {
-    	 ParsedInput userInput = theParser.parse(gameClient.getCommand());
-    	 if (commands.contains(userInput.getCommand())) {
-    	        if (userInput.getCommand().equals("quit")) {
-    	            return false;
-	    	        } else if (userInput.getCommand().equals("move")) {
-	    	            processMove(userInput);
-	    	        } else if (userInput.getCommand().equals("buy")) {
-	    	            processBuy(userInput);
-	    	        } else if (userInput.getCommand().equals("flee")) {
-	    	            return playerFlee();
-	    	        }else if (userInput.getCommand().equals("listItems")) {
-	                    handleListItems();
-	                } else if (userInput.getCommand().equals("getItem")) {
-	                    handleGetItem(userInput.getCommand());
-	                } else if (userInput.getCommand().equals("dropItem")) {
-	                    handleDropItem(userInput.getCommand());
-	                } else if (userInput.getCommand().equals("talk")) {
-	                    handleCharacterConversations(); // Initiate character conversations
-	                } 	    
-    	        } 
-    	 else {
-    	        gameClient.playerMessage("We don't recognize that command - try again!");
-    	    }
-    	    return true;
-    	}
+	    ParsedInput userInput = theParser.parse(gameClient.getCommand());
+	    if (commands.contains(userInput.getCommand())) {
+	        if (userInput.getCommand().equals("quit")) {
+	            return false;
+	        } else if (userInput.getCommand().equals("move")) {
+	            if (validateMoveCommand(userInput)) {
+	                processMove(userInput);
+	                runNPCs(); // Run NPC turns after the player's turn
+	            } else {
+	                gameClient.playerMessage("Invalid move direction. Please enter 'move' followed by a valid direction (east, west, north, or south).");
+	            }
+	        } else if (userInput.getCommand().equals("buy")) {
+	            processBuy(userInput);
+	        } else if (userInput.getCommand().equals("flee")) {
+	            return playerFlee();
+	        } else if (userInput.getCommand().equals("listItems")) {
+	            handleListItems();
+	        } else if (userInput.getCommand().equals("getItem")) {
+	            handleGetItem(userInput.getCommand());
+	        } else if (userInput.getCommand().equals("dropItem")) {
+	            handleDropItem(userInput.getCommand());
+	        }
+	    } else {
+	        gameClient.playerMessage("We don't recognize that command - try again!");
+	    }
+	    return true;
+	}
+//     validation players movement
+     private boolean validateMoveCommand(ParsedInput userInput) {
+	    if (userInput.getArguments().size() == 1) {
+	        String exitLabel = (String) userInput.getArguments().get(0);
+	        // Check if the exitLabel is a valid direction (east, west, north, or south)
+	        if (exitLabel.equalsIgnoreCase("east") || exitLabel.equalsIgnoreCase("west")
+	            || exitLabel.equalsIgnoreCase("north") || exitLabel.equalsIgnoreCase("south")) {
+	            return true; // Valid move command
+	        }
+	    }
+	    return false; // Invalid move command
+	}
     	   	 
-      
-     
-      private void processMove(ParsedInput userInput) {
-    	 String exitLabel = (String) userInput.getArguments().get(0);
-    	 Exit desiredExit = thePlayer.getCurrentLocation().getExit(exitLabel);
-    	 if (desiredExit == null) {
-    		 gameClient.playerMessage("There is no exit there . . . try moving somewhere else");
-    		 return;
-    	 }
-    	 thePlayer.setCurrentLocation(desiredExit.getDestination());
-    	 gameClient.playerMessage("You find yourself looking at ");
-    	 gameClient.playerMessage(thePlayer.getCurrentLocation().getDescription());
+     private void processMove(ParsedInput userInput) {
+	    String exitLabel = (String) userInput.getArguments().get(0);
+	    Exit desiredExit = thePlayer.getCurrentLocation().getExit(exitLabel);
+	    if (desiredExit == null) {
+	        gameClient.playerMessage("There is no exit there . . . try moving somewhere else");
+	        return;
+	    }
+	    thePlayer.setCurrentLocation(desiredExit.getDestination());
+	    gameClient.playerMessage("You find yourself looking at ");
+	    gameClient.playerMessage(thePlayer.getCurrentLocation().getDescription());
      }
-      
+    
       private void processBuy(ParsedInput userInput) {
     	    // Check if the command includes "armor" to specify buying armor
     	    if (userInput.getArguments().contains("armor")) {
