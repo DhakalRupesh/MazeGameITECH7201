@@ -5,7 +5,7 @@ import java.util.HashMap;
 
 public class Blacksmith {
 	private HashMap<String, Armor> availableArmors;
-    private ArrayList<Armor> upgradedArmors;
+    public ArrayList<Armor> upgradedArmors;
     private Inventory inventory;
     private Money gold;
 
