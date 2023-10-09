@@ -123,6 +123,11 @@ public class DungeonMaster {
 	            handleGetItem(userInput.getCommand());
 	        } else if (userInput.getCommand().equals("dropItem")) {
 	            handleDropItem(userInput.getCommand());
+	        }else if (userInput.getCommand().equals("talk")) {
+	        	handleCharacterConversations();;
+	        } else if (userInput.getCommand().equals("status")) {
+	            String statusMessage = getMazeStatus();
+	            gameClient.playerMessage(statusMessage);
 	        }
 	    } else {
 	        gameClient.playerMessage("We don't recognize that command - try again!");
