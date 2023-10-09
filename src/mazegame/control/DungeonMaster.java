@@ -41,9 +41,9 @@ public class DungeonMaster {
          commands.add("move");
          commands.add("buy");
          commands.add("flee");
-         commands.add("listItems");
-         commands.add("getItem");
-         commands.add("dropItem");
+         commands.add("list");
+         commands.add("get");
+         commands.add("drop");
          commands.add("talk");
          commands.add("status");
          theParser = new Parser (commands);
@@ -118,11 +118,11 @@ public class DungeonMaster {
 	            processBuy(userInput);
 	        } else if (userInput.getCommand().equals("flee")) {
 	            return playerFlee();
-	        } else if (userInput.getCommand().equals("listItems")) {
+	        } else if (userInput.getCommand().equals("list")) {
 	            handleListItems();
-	        } else if (userInput.getCommand().equals("getItem")) {
+	        } else if (userInput.getCommand().equals("get")) {
 	            handleGetItem(userInput.getCommand());
-	        } else if (userInput.getCommand().equals("dropItem")) {
+	        } else if (userInput.getCommand().equals("drop")) {
 	            handleDropItem(userInput.getCommand());
 	        }else if (userInput.getCommand().equals("talk")) {
 	        	handleCharacterConversations();;
@@ -307,7 +307,7 @@ public class DungeonMaster {
 
       // Method to handle the "getItem" command
       private void handleGetItem(String command) {
-          Pattern pattern = Pattern.compile("getItem\\s+(\\w+)");
+          Pattern pattern = Pattern.compile("get\\s+(\\w+)");
           Matcher matcher = pattern.matcher(command);
 
           if (matcher.find()) {
@@ -321,13 +321,13 @@ public class DungeonMaster {
                   gameClient.playerMessage("Item not found in the location or invalid item label.");
               }
           } else {
-              gameClient.playerMessage("Invalid getItem command. Use 'getItem [itemLabel]'.");
+              gameClient.playerMessage("Invalid get command. Use 'get [itemLabel]'.");
           }
       }
 
       // Method to handle the "dropItem" command
       private void handleDropItem(String command) {
-          Pattern pattern = Pattern.compile("dropItem\\s+(\\w+)");
+          Pattern pattern = Pattern.compile("drop\\s+(\\w+)");
           Matcher matcher = pattern.matcher(command);
 
           if (matcher.find()) {
@@ -339,7 +339,7 @@ public class DungeonMaster {
                   gameClient.playerMessage("Item not found in your inventory or invalid item label.");
               }
           } else {
-              gameClient.playerMessage("Invalid dropItem command. Use 'dropItem [itemLabel]'.");
+              gameClient.playerMessage("Invalid drop command. Use 'drop [itemLabel]'.");
           }
       }
       

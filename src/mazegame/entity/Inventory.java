@@ -9,6 +9,18 @@ public class Inventory {
     public Inventory() {
         gold = new Money();
         itemList = new HashMap<String, Item>();
+        initializeDummyItems(); // Call a method to add dummy items during initialization
+    }
+    
+    // Method to initialize the inventory with dummy items
+    private void initializeDummyItems() {
+        // Create and add dummy items to the itemList
+        Item dummyItem1 = new Weapon("Sword", 50, 5.0, "A sharp sword for battling enemies.");
+        Item dummyItem2 = new Weapon("Arrow", 20, 0.5, "An accurate hawkeye for longer reach.");
+        
+        // Add the dummy items to the itemList
+        addItem(dummyItem1);
+        addItem(dummyItem2);
     }
 
     // Check if the inventory contains an item with a given label
