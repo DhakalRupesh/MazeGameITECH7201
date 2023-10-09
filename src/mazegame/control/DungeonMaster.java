@@ -45,6 +45,7 @@ public class DungeonMaster {
          commands.add("getItem");
          commands.add("dropItem");
          commands.add("talk");
+         commands.add("status");
          theParser = new Parser (commands);
          playerTurnHandler = new CommandHandler();
          npcCollection = new NonPlayerCharacterCollection();
